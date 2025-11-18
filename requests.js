@@ -116,7 +116,25 @@ export async function submitLeaveRequest(db, auth, currentUser, data, dates, ele
         await sendTelegramNotification(message); 
         
         if (loadingEl) loadingEl.classList.add('hidden'); 
-        showCustomAlert('ប្រព័ន្ធទិន្នន័យច្បាប់!', 'សំណើរបស់អ្នកត្រូវបានផ្ញើទៅគណៈគ្រប់គ្រងត្រួតពិនិត្យដើម្បីសម្រេចអនុម័ត យល់ព្រម ឬបដិសេធ! សូមរង់ចាំប្រហែល ០៥នាទី(ក្នុងម៉ោងធ្វើការ)!', 'success'); 
+        
+        // === MODIFIED: Time Check Logic ===
+        if (Utils.isOutsideWorkingHours()) {
+            // ករណីក្រៅម៉ោងការងារ
+            showCustomAlert(
+                'ក្រៅម៉ោងការងារ!', 
+                'លោកអ្នកបានស្នើសំណើសុំច្បាប់ស្ថិតក្រៅម៉ោងការងារ ដូច្នោះសំណើរបស់អ្នកមិនទាន់ត្រូវបានគណៈគ្រប់គ្រងត្រួតពិនិត្យនោះទេ! សូមរង់ចាំដល់ម៉ោងធ្វើការសិន!!!', 
+                'warning'
+            );
+        } else {
+            // ករណីម៉ោងធម្មតា
+            showCustomAlert(
+                'ប្រព័ន្ធទិន្នន័យច្បាប់!', 
+                'សំណើរបស់អ្នកត្រូវបានផ្ញើទៅគណៈគ្រប់គ្រងត្រួតពិនិត្យដើម្បីសម្រេចអនុម័ត យល់ព្រម ឬបដិសេធ! សូមរង់ចាំប្រហែល ០៥នាទី(ក្នុងម៉ោងធ្វើការ)!', 
+                'success'
+            );
+        }
+        // === END MODIFIED ===
+
         navigateTo('page-history'); 
     } catch (error) { 
         console.error("Error submitting leave request:", error); 
@@ -185,7 +203,25 @@ export async function submitOutRequest(db, auth, currentUser, data, dates, eleme
         await sendTelegramNotification(message); 
         
         if (loadingEl) loadingEl.classList.add('hidden'); 
-        showCustomAlert('ជោគជ័យ!', 'សំណើរបស់អ្នកត្រូវបានផ្ញើដោយជោគជ័យ!', 'success'); 
+        
+        // === MODIFIED: Time Check Logic ===
+        if (Utils.isOutsideWorkingHours()) {
+            // ករណីក្រៅម៉ោងការងារ
+            showCustomAlert(
+                'ក្រៅម៉ោងការងារ!', 
+                'លោកអ្នកបានស្នើសំណើសុំច្បាប់ស្ថិតក្រៅម៉ោងការងារ ដូច្នោះសំណើរបស់អ្នកមិនទាន់ត្រូវបានគណៈគ្រប់គ្រងត្រួតពិនិត្យនោះទេ! សូមរង់ចាំដល់ម៉ោងធ្វើការសិន!!!', 
+                'warning'
+            );
+        } else {
+            // ករណីម៉ោងធម្មតា
+            showCustomAlert(
+                'ជោគជ័យ!', 
+                'សំណើរបស់អ្នកត្រូវបានផ្ញើដោយជោគជ័យ!', 
+                'success'
+            );
+        }
+        // === END MODIFIED ===
+
         navigateTo('page-history'); 
     } catch (error) { 
         console.error("Error submitting out request:", error); 
@@ -325,7 +361,6 @@ function renderHistoryCard(request, type) {
     let invoiceButton = ''; 
     if (request.status === 'approved') invoiceButton = `<button data-id="${request.requestId}" data-type="${type}" class="invoice-btn mt-3 py-1.5 px-3 bg-indigo-100 text-indigo-700 rounded-md font-semibold text-xs shadow-sm hover:bg-indigo-200 w-full sm:w-auto">ពិនិត្យមើលវិក័យប័ត្រ</button>`; 
     
-    // === MODIFIED: History Card Design (Modern) ===
     return `<div class="bg-white border border-gray-200 rounded-xl shadow-sm p-4 mb-4">
         <div class="flex justify-between items-start mb-2">
             <span class="font-semibold text-gray-800 text-base">${request.duration || 'N/A'}</span>
